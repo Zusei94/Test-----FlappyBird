@@ -9,12 +9,14 @@ public class PlayerController : MonoBehaviour {
 	private float timer, tiltSmooth, y;
 	private Rigidbody2D playerRigid;
 	private Quaternion downRotation, upRotation;
+	private SpriteRenderer spriteRenderer;
 
 	void Start () {
 		tiltSmooth = maxTiltSmooth;
 		playerRigid = GetComponent<Rigidbody2D> ();
 		downRotation = Quaternion.Euler (0, 0, -90);
 		upRotation = Quaternion.Euler (0, 0, 35);
+		spriteRenderer = GetComponent<SpriteRenderer>();
 	}
 
 	void Update () {
@@ -65,6 +67,7 @@ public class PlayerController : MonoBehaviour {
 			foreach (Transform child in col.transform.parent.transform) {
 				child.gameObject.GetComponent<BoxCollider2D> ().enabled = false;
 			}
+			StartCoroutine(DoTheFadeCR(spriteRenderer));
 			KillPlayer ();
 		}
 	}
@@ -84,4 +87,18 @@ public class PlayerController : MonoBehaviour {
 		GetComponent<Animator> ().enabled = false;
 	}
 
+
+	// change color of player to grayscale
+	private IEnumerator DoTheFadeCR (SpriteRenderer spriteRenderer)
+    {
+		float time = 0;
+		while (time < 1f)
+        {
+			spriteRenderer.material.SetFloat("_GrayscaleAmount", time);
+			time += Time.deltaTime;
+			yield return null;
+        }
+		spriteRenderer.material.SetFloat("_GrayscaleAmount", 1);
+
+	}
 }
