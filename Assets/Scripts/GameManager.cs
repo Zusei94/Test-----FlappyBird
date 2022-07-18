@@ -8,7 +8,8 @@ public class GameManager : MonoBehaviour {
 
 	public static GameManager Instance;
 
-	[SerializeField] private GameObject[] playerPrefabs;
+	//[SerializeField] private GameObject[] playerPrefabs;
+	[SerializeField] private GameObject playerPrefab;
 	[SerializeField] private Transform playerPos;
 	[SerializeField] private Sprite[] backgroundImage;
 	[SerializeField] private SpriteRenderer background;
@@ -20,10 +21,14 @@ public class GameManager : MonoBehaviour {
 	[SerializeField] private Sprite[] medals;
 	[SerializeField] private Image medalImage;
 	[SerializeField] private GameObject medalSparkle;
+	[Header("Sprite element")]
+	[SerializeField] private Sprite[] playerSprites;
 
 	private GameObject flappy;
 	private bool ready, start, end, newBool;
 	private int gameScore;
+	// index of sprite PlayerPrefab
+	private int i;
 
 	void Awake () {
 		// Create an Instance of the GameManager to be used by other scripts
@@ -38,7 +43,12 @@ public class GameManager : MonoBehaviour {
 
 		ready = true;
 		// Create one amongst the 3 players
-		flappy = Instantiate (playerPrefabs[Random.Range (0, playerPrefabs.Length)], playerPos.position, transform.rotation);
+		//flappy = Instantiate (playerPrefabs[Random.Range (0, playerPrefabs.Length)], playerPos.position, transform.rotation);
+		flappy = Instantiate(playerPrefab, playerPos.position, transform.rotation);
+		//change color without changing prefabs
+		flappy.GetComponent<SpriteRenderer>().sprite = playerSprites[i = Random.Range(0, playerSprites.Length)];
+		flappy.GetComponent<Animator>().SetInteger("Index", i);
+
 		flappy.transform.parent = playerPos;
 		// Use one amongst the 2 Backgrounds
 		background.sprite = backgroundImage[Random.Range (0, backgroundImage.Length)];
